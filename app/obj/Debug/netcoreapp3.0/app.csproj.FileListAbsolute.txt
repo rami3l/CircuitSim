@@ -1,0 +1,15 @@
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\bin\Debug\netcoreapp3.0\app.exe
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\bin\Debug\netcoreapp3.0\app.deps.json
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\bin\Debug\netcoreapp3.0\app.runtimeconfig.json
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\bin\Debug\netcoreapp3.0\app.runtimeconfig.dev.json
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\bin\Debug\netcoreapp3.0\app.dll
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\bin\Debug\netcoreapp3.0\app.pdb
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\bin\Debug\netcoreapp3.0\library.dll
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\bin\Debug\netcoreapp3.0\library.pdb
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\obj\Debug\netcoreapp3.0\app.csprojAssemblyReference.cache
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\obj\Debug\netcoreapp3.0\app.AssemblyInfoInputs.cache
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\obj\Debug\netcoreapp3.0\app.AssemblyInfo.cs
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\obj\Debug\netcoreapp3.0\app.csproj.CopyComplete
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\obj\Debug\netcoreapp3.0\app.dll
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\obj\Debug\netcoreapp3.0\app.pdb
+C:\Users\Rami3L Li\Documents\GitHub\CircuitSim\app\bin\Debug\netcoreapp3.0\MathNet.Numerics.dll
