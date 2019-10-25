@@ -1,5 +1,6 @@
 using System;
 using library;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Xunit;
 
@@ -61,7 +62,7 @@ namespace test_library {
             };
             var should = builder.DenseOfArray(shouldArr);
 
-            Assert.Equal(testCkt.GenA(), should);
+            Assert.True(Precision.AlmostEqual(testCkt.GenA(), should, 8));
         }
 
         [Fact]
@@ -77,7 +78,7 @@ namespace test_library {
             };
             var should = builder.DenseOfArray(shouldArr);
 
-            Assert.Equal(testCkt.GenZ(), should.ToColumnMatrix());
+            Assert.True(Precision.AlmostEqual(testCkt.GenZ(), should.ToColumnMatrix(), 8));
         }
 
         [Fact]
@@ -92,7 +93,7 @@ namespace test_library {
             };
             var should = builder.DenseOfArray(shouldArr);
 
-            Assert.Equal(testCkt.SolveX(), should.ToColumnMatrix());
+            Assert.True(Precision.AlmostEqual(testCkt.SolveX(), should.ToColumnMatrix(), 8));
         }
     }
 }
