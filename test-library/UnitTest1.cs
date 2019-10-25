@@ -15,7 +15,7 @@ namespace test_library {
             testCkt.AddComponent(new Resistor("R2", 4, node2, node3));
             testCkt.AddComponent(new Resistor("R3", 8, node2, gnd));
             testCkt.AddComponent(new VSource("Vs1", 32, node2, node1));
-            testCkt.AddComponent(new VSource("Vs2", 32, node3, gnd));
+            testCkt.AddComponent(new VSource("Vs2", 20, node3, gnd));
             return testCkt;
         }
 
@@ -62,6 +62,37 @@ namespace test_library {
             var should = builder.DenseOfArray(shouldArr);
 
             Assert.Equal(testCkt.GenA(), should);
+        }
+
+        [Fact]
+        public void TestCkt1_GenZ() {
+            var builder = Vector<double>.Build;
+            var testCkt = TestCkt1();
+            double[] shouldArr = {
+                0,
+                0,
+                0,
+                32,
+                20
+            };
+            var should = builder.DenseOfArray(shouldArr);
+
+            Assert.Equal(testCkt.GenZ(), should.ToColumnMatrix());
+        }
+
+        [Fact]
+        public void TestCkt1_SolveX() {
+            var builder = Vector<double>.Build;
+            var testCkt = TestCkt1();
+            double[] shouldArr = {-8,
+                24,
+                20,
+                -4,
+                1
+            };
+            var should = builder.DenseOfArray(shouldArr);
+
+            Assert.Equal(testCkt.SolveX(), should.ToColumnMatrix());
         }
     }
 }

@@ -124,6 +124,7 @@ namespace library {
         }
 
         public Matrix<double> GenA() {
+            /* The matrix A = {{G|B},{C|D}}  */
             var builder = Matrix<double>.Build;
             var n = this.N;
             var m = this.M;
@@ -182,5 +183,31 @@ namespace library {
         }
 
         Matrix<double> GenC() => this.GenB().Transpose();
+
+        public Matrix<double> GenZ() {
+            var builder = Matrix<double>.Build;
+            var size = this.N + this.M;
+            var res = builder.Dense(size, 1);
+            foreach (var iSource in this.iSources) {
+                var p = iSource.positive.Id;
+                var n = iSource.negative.Id;
+                var i = iSource.current;
+
+                AddIfNotGrounded(ref res, p, 0, i);
+                AddIfNotGrounded(ref res, n, 0, -i);
+            }
+            foreach ((var vSource, var i) in this.vSources.Select((v, i) => (v, i))) {
+                AddIfNotGrounded(ref res, this.N + i, 0, vSource.voltage);
+            }
+            return res;
+        }
+
+        public Matrix<double> SolveX() {
+            /* Now we can solve the equation AX=Z */
+            var A = this.GenA();
+            var Z = this.GenZ();
+            var X = A.Inverse() * Z;
+            return X;
+        }
     }
 }
