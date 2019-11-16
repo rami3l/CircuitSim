@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 using Xunit;
 
 namespace test_library {
-    public class UnitTest1 {
+    public class TestDCAnalysis {
         public Circuit TestCkt1() {
             var testCkt = new Circuit("testCkt");
             var gnd = testCkt.ground;

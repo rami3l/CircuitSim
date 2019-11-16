@@ -2,7 +2,7 @@
 
 namespace library {
     public class Circuit {
-        string title;
+        public string title;
         public List<Device> devices;
         public List<VSource> vSources;
         public List<ISource> iSources;

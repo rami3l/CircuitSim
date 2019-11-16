@@ -4,13 +4,13 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace library {
     public class DCAnalysis {
-        public static void AddIfNotGrounded(Matrix<double> mat, int i, int j, double num) {
+        public static void AddIfNotGrounded(ref Matrix<double> mat, int i, int j, double num) {
             if (i != -1 && j != -1) {
                 mat[i, j] += num;
             }
         }
 
-        public static void AddIfNotGrounded(Vector<double> mat, int i, double num) {
+        public static void AddIfNotGrounded(ref Vector<double> mat, int i, double num) {
             if (i != -1) {
                 mat[i] += num;
             }
@@ -54,10 +54,10 @@ namespace library {
                 int i = device.pins[0].ID;
                 int j = device.pins[1].ID;
 
-                AddIfNotGrounded(res, i, i, g);
-                AddIfNotGrounded(res, j, j, g);
-                AddIfNotGrounded(res, i, j, -g);
-                AddIfNotGrounded(res, j, i, -g);
+                AddIfNotGrounded(ref res, i, i, g);
+                AddIfNotGrounded(ref res, j, j, g);
+                AddIfNotGrounded(ref res, i, j, -g);
+                AddIfNotGrounded(ref res, j, i, -g);
             }
             return res;
         }
@@ -69,8 +69,8 @@ namespace library {
                 var p = vSource.positive.ID;
                 var n = vSource.negative.ID;
 
-                AddIfNotGrounded(res, p, i, 1);
-                AddIfNotGrounded(res, n, i, -1);
+                AddIfNotGrounded(ref res, p, i, 1);
+                AddIfNotGrounded(ref res, n, i, -1);
             }
             return res;
         }
@@ -86,11 +86,11 @@ namespace library {
                 var n = iSource.negative.ID;
                 var i = iSource.current;
 
-                AddIfNotGrounded(res, p, i);
-                AddIfNotGrounded(res, n, -i);
+                AddIfNotGrounded(ref res, p, i);
+                AddIfNotGrounded(ref res, n, -i);
             }
             foreach ((var vSource, var i) in c.vSources.Select((v, i) => (v, i))) {
-                AddIfNotGrounded(res, c.N + i, vSource.voltage);
+                AddIfNotGrounded(ref res, c.N + i, vSource.voltage);
             }
             return res;
         }
