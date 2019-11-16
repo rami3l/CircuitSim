@@ -9,7 +9,7 @@ namespace library {
         }
 
         private int id;
-        public int Id {
+        public int ID {
             get => id;
             set => id = value;
         }
@@ -20,7 +20,7 @@ namespace library {
         }
 
         public bool Equals(Node other) {
-            return this.Id.Equals(other.Id);
+            return this.ID.Equals(other.ID);
         }
     }
 }

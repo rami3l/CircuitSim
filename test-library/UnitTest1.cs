@@ -24,76 +24,36 @@ namespace test_library {
         public void TestCkt1_GenA() {
             var builder = Matrix<double>.Build;
             var testCkt = TestCkt1();
-            double[, ] shouldArr = {
-                {
-                0.5,
-                0,
-                0,
-                -1,
-                0
-                },
-                {
-                0,
-                0.375,
-                -0.25,
-                1,
-                0
-                },
-                {
-                0,
-                -0.25,
-                0.25,
-                0,
-                1
-                },
-                {-1,
-                1,
-                0,
-                0,
-                0
-                },
-                {
-                0,
-                0,
-                1,
-                0,
-                0
-                },
+            double[,] shouldArr = {
+                {0.5,   0,      0,      -1,     0},
+                {0,     0.375,  -0.25,  1,      0},
+                {0,     -0.25,  0.25,   0,      1},
+                {-1,    1,      0,      0,      0},
+                {0,     0,      1,      0,      0},
             };
             var should = builder.DenseOfArray(shouldArr);
 
-            Assert.True(Precision.AlmostEqual(testCkt.GenA(), should, 8));
+            Assert.True(Precision.AlmostEqual(DCAnalysis.GenA(testCkt), should, 8));
         }
 
         [Fact]
         public void TestCkt1_GenZ() {
             var builder = Vector<double>.Build;
             var testCkt = TestCkt1();
-            double[] shouldArr = {
-                0,
-                0,
-                0,
-                32,
-                20
-            };
+            double[] shouldArr = { 0, 0, 0, 32, 20 };
             var should = builder.DenseOfArray(shouldArr);
 
-            Assert.True(Precision.AlmostEqual(testCkt.GenZ(), should.ToColumnMatrix(), 8));
+            Assert.True(Precision.AlmostEqual(DCAnalysis.GenZ(testCkt), should, 8));
         }
 
         [Fact]
         public void TestCkt1_SolveX() {
             var builder = Vector<double>.Build;
             var testCkt = TestCkt1();
-            double[] shouldArr = {-8,
-                24,
-                20,
-                -4,
-                1
-            };
+            double[] shouldArr = { -8, 24, 20, -4, 1 };
             var should = builder.DenseOfArray(shouldArr);
 
-            Assert.True(Precision.AlmostEqual(testCkt.SolveX(), should.ToColumnMatrix(), 8));
+            Assert.True(Precision.AlmostEqual(DCAnalysis.SolveX(testCkt), should, 8));
         }
     }
 }
