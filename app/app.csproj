@@ -2,7 +2,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\library\library.csproj" />
-    <PackageReference Include="MathNet.Numerics"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MathNet.Numerics" Version="4.9.0" />
   </ItemGroup>
 
   <PropertyGroup>
