@@ -2,7 +2,7 @@
 
 namespace library {
     public class Circuit {
-        public string title;
+        public string name;
         public List<Device> devices;
         public List<PrimVSource> vSources;
         public List<PrimISource> iSources;
@@ -13,16 +13,16 @@ namespace library {
         public int M => this.vSources.Count;
 
         public Circuit(string name) {
-            title = name;
+            this.name = name;
 
             var gnd = new Node(-1);
             gnd.Name = "Ground";
-            ground = gnd;
+            this.ground = gnd;
 
-            devices = new List<Device>();
-            vSources = new List<PrimVSource>();
-            iSources = new List<PrimISource>();
-            nodes = new List<Node>();
+            this.devices = new List<Device>();
+            this.vSources = new List<PrimVSource>();
+            this.iSources = new List<PrimISource>();
+            this.nodes = new List<Node>();
         }
 
         public object Clone() {

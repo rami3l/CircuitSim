@@ -14,9 +14,9 @@ namespace library {
             set => id = value;
         }
 
-        public Node(int nodeId) {
-            id = nodeId; // -1 for ground, >=0 for others
-            name = $"Node {nodeId}";
+        public Node(int ID) {
+            this.id = ID; // -1 for ground, >=0 for others
+            name = $"Node {ID}";
         }
 
         public bool Equals(Node other) {

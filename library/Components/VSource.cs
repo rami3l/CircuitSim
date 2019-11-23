@@ -1,5 +1,5 @@
 using System;
-using MathNet.Numerics;
+
 namespace library {
     public class PrimVSource : Component {
         // A Primitive (Constant) voltage source.
@@ -73,8 +73,8 @@ namespace library {
                         var omega = 2 * Math.PI / this.frequency;
                         var t = currentTime - delay;
                         var AC = t < 0 ?
-                                    this.voltage * Math.Sin(omega * t + this.initialPhase) :
-                                    0;
+                            this.voltage * Math.Sin(omega * t + this.initialPhase) :
+                            0;
                         return this.offset + AC;
                     }
                 case WorkingMode.Square: {

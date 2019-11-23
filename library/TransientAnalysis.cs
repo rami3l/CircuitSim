@@ -14,7 +14,7 @@ namespace library {
 
         public static Circuit GenCompanion(in Circuit ckt, in double currentTime, in TransientAnalysisResult result) {
             /* Generate a companion of the circuit for the transient analysis. */
-            var companion = new Circuit($"__Companion_{ckt.title}");
+            var companion = new Circuit($"__Companion_{ckt.name}");
             foreach (var device in ckt.devices) {
                 switch (device) {
                     case Capacitor c:
