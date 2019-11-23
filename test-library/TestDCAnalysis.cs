@@ -15,8 +15,8 @@ namespace test_library {
             testCkt.AddComponent(new Resistor("R1", 2, node1, gnd));
             testCkt.AddComponent(new Resistor("R2", 4, node2, node3));
             testCkt.AddComponent(new Resistor("R3", 8, node2, gnd));
-            testCkt.AddComponent(new VSource("Vs1", 32, node2, node1));
-            testCkt.AddComponent(new VSource("Vs2", 20, node3, gnd));
+            testCkt.AddComponent(new PrimVSource("Vs1", 32, node2, node1));
+            testCkt.AddComponent(new PrimVSource("Vs2", 20, node3, gnd));
             return testCkt;
         }
 

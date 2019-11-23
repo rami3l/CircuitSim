@@ -12,7 +12,7 @@ namespace library {
         // TODO: Setters for the time parameters
 
 
-        public static Circuit GenCompanion(in Circuit ckt, in TransientAnalysisResult result) {
+        public static Circuit GenCompanion(in Circuit ckt, in double currentTime, in TransientAnalysisResult result) {
             /* Generate a companion of the circuit for the transient analysis. */
             var companion = new Circuit($"__Companion_{ckt.title}");
             foreach (var device in ckt.devices) {
@@ -28,7 +28,7 @@ namespace library {
                             p,
                             n
                         ));
-                        companion.AddComponent(new ISource(
+                        companion.AddComponent(new PrimISource(
                             $"__CompanionISource_{c.name}",
                             vPrev * timestep / c.capacitance,
                             p,
@@ -48,9 +48,11 @@ namespace library {
 
 
         public void Analyze(in Circuit ckt, ref TransientAnalysisResult result) {
-            // Perform the transient analysis and store the result in the given TransientAnalysisResult variable.
-            for (double currentTime = 0; currentTime < stoptime; currentTime += timestep) {
-                var companion = TransientAnalysis.GenCompanion(ckt, result);
+            /* Perform the transient analysis and store the result in the given TransientAnalysisResult variable. */
+            // Start the simulation with a DC analysis.
+            result.Add(DCAnalysis.SolveX(ckt));
+            for (double currentTime = timestep; currentTime < stoptime; currentTime += timestep) {
+                var companion = TransientAnalysis.GenCompanion(ckt, currentTime, result);
                 result.Add(DCAnalysis.SolveX(companion));
             }
         }
@@ -66,7 +68,6 @@ namespace library {
             var size = n + m;
 
             history = new List<Vector<double>>();
-            history.Add(builder.Dense(size));
         }
 
         public void Add(Vector<double> record) {
