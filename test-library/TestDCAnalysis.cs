@@ -6,7 +6,7 @@ using Xunit;
 
 namespace test_library {
     public class TestDCAnalysis {
-        public Circuit TestCkt1() {
+        public static Circuit TestCkt1() {
             var testCkt = new Circuit("testCkt");
             var gnd = testCkt.ground;
             var node1 = testCkt.GenNode();

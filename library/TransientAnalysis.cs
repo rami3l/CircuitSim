@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System;
 using System.Linq;
@@ -5,16 +6,29 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace library {
     public class TransientAnalysis {
+        private static double CheckLastVoltage(Node n, List<Vector<double>> result) {
+            if (n.ID == -1) {
+                return 0;
+            } else {
+                return result.Last()[n.ID];
+            }
+        }
+
         public static Circuit GenCompanion(in Circuit ckt, in double currentTime, in TransientAnalysisData data) {
             /* Generate a companion of the circuit for the transient analysis. */
-            var companion = new Circuit($"__Companion_{ckt.name}");
+            var companion = (Circuit)ckt.Clone();
+            companion.name = $"__Companion_{ckt.name}";
+
+            companion.devices = new List<Device>();
             foreach (var device in ckt.devices) {
                 switch (device) {
                     case Capacitor c:
                         // Here we use p and n to represent the positive/negative pin of the imaginary ISource Ieq.
                         var (p, n) = (c.pins[0], c.pins[1]);
                         // Get the previously calculated voltage between the two pins.
-                        var vPrev = data.result.Last()[p.ID] - data.result.Last()[n.ID];
+                        var vPrev = data.result.Count() != 0 ?
+                            CheckLastVoltage(p, data.result) - CheckLastVoltage(n, data.result) :
+                            0;
                         companion.AddComponent(new Resistor(
                             $"__CompanionRes_{c.name}",
                             data.timestep / c.capacitance,
@@ -35,16 +49,40 @@ namespace library {
                         break;
                 }
             }
+
+            companion.vSources = new List<PrimVSource>();
+            foreach (var pvs in ckt.vSources) {
+                if (pvs is VSource) {
+                    VSource vs = (VSource)pvs;
+                    switch (vs.mode) {
+                        case VSource.WorkingMode.Constant:
+                            companion.AddComponent(pvs);
+                            break;
+
+                        default:
+                            companion.AddComponent(new PrimVSource(
+                                $"__CurrentVS_{vs.name}",
+                                vs.GetValue(currentTime),
+                                vs.positive,
+                                vs.negative
+                            ));
+                            break;
+                    }
+                } else {
+                    companion.AddComponent(pvs);
+                }
+            }
+
+            // TODO: Implement ISources
+
             return companion;
             // throw new NotImplementedException();
         }
 
 
-        public void Analyze(in Circuit ckt, ref TransientAnalysisData data) {
+        public static void Analyze(in Circuit ckt, ref TransientAnalysisData data) {
             /* Perform the transient analysis and store the result in the given TransientAnalysisData variable. */
-            // Start the simulation with a DC analysis.
-            data.Add(DCAnalysis.SolveX(ckt));
-            for (double currentTime = data.timestep; currentTime < data.stoptime; currentTime += data.timestep) {
+            for (double currentTime = 0; currentTime < data.stoptime; currentTime += data.timestep) {
                 var companion = TransientAnalysis.GenCompanion(ckt, currentTime, data);
                 data.Add(DCAnalysis.SolveX(companion));
             }
