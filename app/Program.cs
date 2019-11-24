@@ -57,8 +57,8 @@ namespace app {
             var plt = new ScottPlot.Plot();
             plt.PlotScatter(dataXs, dataV);
             plt.Title("TestTransAnalysis");
-            plt.XLabel("Time");
-            plt.YLabel("Potential");
+            plt.XLabel("Time/(3E-5*s)");
+            plt.YLabel("Potential/V");
             plt.SaveFig("./Plots/TestTransAnalysis.png");
         }
     }

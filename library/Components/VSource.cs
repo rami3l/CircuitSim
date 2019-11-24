@@ -45,6 +45,7 @@ namespace library {
         }
 
         public void SetSine(double offset, double frequency, double delay, double initialPhase) {
+            this.mode = WorkingMode.Sine;
             this.offset = offset;
             this.frequency = frequency;
             this.delay = delay;
@@ -52,6 +53,7 @@ namespace library {
         }
 
         public void SetSquare(double offset, double frequency, double delay, double dutyCycle) {
+            this.mode = WorkingMode.Square;
             this.offset = offset;
             this.frequency = frequency;
             this.delay = delay;
@@ -59,6 +61,7 @@ namespace library {
         }
 
         public void SetStep(double offset, double delay, double riseTime) {
+            this.mode = WorkingMode.Step;
             this.offset = offset;
             this.delay = delay;
             this.riseTime = riseTime;

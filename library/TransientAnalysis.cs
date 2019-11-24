@@ -19,37 +19,6 @@ namespace library {
             var companion = (Circuit)ckt.Clone();
             companion.name = $"__Companion_{ckt.name}";
 
-            companion.devices = new List<Device>();
-            foreach (var device in ckt.devices) {
-                switch (device) {
-                    case Capacitor c:
-                        // Here we use p and n to represent the positive/negative pin of the imaginary ISource Ieq.
-                        var (p, n) = (c.pins[0], c.pins[1]);
-                        // Get the previously calculated voltage between the two pins.
-                        var vPrev = data.result.Count() != 0 ?
-                            CheckLastVoltage(p, data.result) - CheckLastVoltage(n, data.result) :
-                            0;
-                        companion.AddComponent(new Resistor(
-                            $"__CompanionRes_{c.name}",
-                            data.timestep / c.capacitance,
-                            p,
-                            n
-                        ));
-                        companion.AddComponent(new PrimISource(
-                            $"__CompanionISource_{c.name}",
-                            vPrev * data.timestep / c.capacitance,
-                            p,
-                            n
-                        ));
-                        break;
-                    case Inductor l:
-                        throw new NotImplementedException();
-                    default:
-                        companion.AddComponent(device);
-                        break;
-                }
-            }
-
             companion.vSources = new List<PrimVSource>();
             foreach (var pvs in ckt.vSources) {
                 if (pvs is VSource) {
@@ -73,7 +42,61 @@ namespace library {
                 }
             }
 
-            // TODO: Implement ISources
+            //* ISource
+            companion.iSources = new List<PrimISource>();
+            foreach (var pis in ckt.iSources) {
+                if (pis is ISource) {
+                    ISource isc = (ISource)pis;
+                    switch (isc.mode) {
+                        case ISource.WorkingMode.Constant:
+                            companion.AddComponent(pis);
+                            break;
+
+                        default:
+                            companion.AddComponent(new PrimVSource(
+                                $"__CurrentIS_{isc.name}",
+                                isc.GetValue(currentTime),
+                                isc.positive,
+                                isc.negative
+                            ));
+                            break;
+                    }
+                } else {
+                    companion.AddComponent(pis);
+                }
+            }
+
+            companion.devices = new List<Device>();
+            foreach (var device in ckt.devices) {
+                switch (device) {
+                    case Capacitor c:
+                        // Here we use p and n to represent the positive/negative pin of the imaginary ISource Ieq.
+                        var (p, n) = (c.pins[0], c.pins[1]);
+                        // Get the previously calculated voltage between the two pins.
+                        var vPrev = data.result.Count() != 0 ?
+                            CheckLastVoltage(p, data.result) - CheckLastVoltage(n, data.result) :
+                            0;
+                        var gEq = c.capacitance / data.timestep;
+                        companion.AddComponent(new Resistor(
+                            $"__CompanionRes_{c.name}",
+                            1 / gEq,
+                            p,
+                            n
+                        ));
+                        companion.AddComponent(new PrimISource(
+                            $"__CompanionISource_{c.name}",
+                            vPrev * gEq,
+                            p,
+                            n
+                        ));
+                        break;
+                    case Inductor l:
+                        throw new NotImplementedException();
+                    default:
+                        companion.AddComponent(device);
+                        break;
+                }
+            }
 
             return companion;
             // throw new NotImplementedException();
