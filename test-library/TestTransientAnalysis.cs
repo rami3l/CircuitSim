@@ -1,16 +1,12 @@
-﻿using System.Linq;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using library;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+using Xunit;
 
-namespace app {
-    class Program {
-        static void Main(string[] args) {
-            Console.WriteLine("Hello World!");
-            TestPlotBasic();
-            TestTransAnalysis();
-        }
-
+namespace test_library {
+    public class TestTransientAnalysis {
         public static Circuit TestCkt2() {
             var testCkt = new Circuit("testTransAnalysis");
             var gnd = testCkt.ground;
@@ -25,6 +21,7 @@ namespace app {
             return testCkt;
         }
 
+        /*
         static void TestPlotBasic() {
             int pointCount = 50;
             double[] dataXs = ScottPlot.DataGen.Consecutive(pointCount);
@@ -39,7 +36,9 @@ namespace app {
             plt.YLabel("Potential (V)");
             plt.SaveFig("./Plots/01a_Quickstart.png");
         }
+        */
 
+        [Fact]
         static void TestTransAnalysis() {
             var ckt2 = TestCkt2();
             var data = new TransientAnalysisData(ckt2, 1E-5, 6E-3);
@@ -50,13 +49,34 @@ namespace app {
             }
             double[] dataV = dataVList.ToArray();
 
-            /*
-            for (int i = 0; i < 20; i++) {
-                Console.Write("{0}, ", dataV[i]);
-            }
-            Console.WriteLine();
-            */
+            double[] shouldDataV = {
+                0,
+                0.009900990099009901,
+                0.019703950593079108,
+                0.029409852072355552,
+                0.039019655517183706,
+                0.048534312393251185,
+                0.057954764745793245,
+                0.06728194529286459,
+                0.0765167775176877,
+                0.08566017576008682,
+                0.09471304530701664,
+                0.10367628248219468,
+                0.1125507747348462,
+                0.12133740072757047,
+                0.13003703042333706,
+                0.13865052517162083,
+                0.14717873779368396,
+                0.1556225126670138,
+                0.16398268580892456,
+                0.1722600849593312,
+            };
 
+            for (int i = 0; i < 20; i++) {
+                Assert.True(Precision.AlmostEqual(dataV[i], shouldDataV[i], 8));
+            }
+
+            /*
             int pointCount = dataV.Length;
             double[] dataXs = ScottPlot.DataGen.Consecutive(pointCount);
 
@@ -66,6 +86,7 @@ namespace app {
             plt.XLabel("Time/(10us)");
             plt.YLabel("Potential/V");
             plt.SaveFig("./Plots/TestTransAnalysis.png");
+            */
         }
     }
 }
