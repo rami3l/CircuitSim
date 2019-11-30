@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
@@ -5,34 +6,40 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace library {
     public class TransientAnalysis {
-        private static double CheckLastVoltage(Node n, List<Vector<double>> result) {
+        private static double CheckLastVoltage(Node n, in TransientAnalysisData data) {
             if (n.ID == -1) {
                 return 0;
             } else {
-                return result.Last()[n.ID];
+                return data.Result.Last()[n.ID];
             }
         }
 
-        public static Circuit GenCompanion(in Circuit ckt, in double currentTime, in TransientAnalysisData data) {
+        private static double CheckLastCurrent(Device d, in TransientAnalysisData data) {
+            var ID = data.CompanionVSources[d];
+            return data.Result.Last()[ID];
+        }
+
+        public static Circuit GenCompanion(in Circuit ckt, in double currentTime, ref TransientAnalysisData data) {
             /* Generate a companion of the circuit for the transient analysis. */
             var companion = (Circuit)ckt.Clone();
-            companion.name = $"__Companion_{ckt.name}";
+            companion.Name = $"__Companion_{ckt.Name}";
 
-            companion.vSources = new List<PrimVSource>();
-            foreach (var pvs in ckt.vSources) {
+            //* VSource
+            companion.VSources = new List<PrimVSource>();
+            foreach (var pvs in ckt.VSources) {
                 if (pvs is VSource) {
                     VSource vs = (VSource)pvs;
-                    switch (vs.mode) {
+                    switch (vs.Mode) {
                         case VSource.WorkingMode.Constant:
                             companion.AddComponent(pvs);
                             break;
 
                         default:
                             companion.AddComponent(new PrimVSource(
-                                $"__CurrentVS_{vs.name}",
+                                $"__CurrentVS_{vs.Name}",
                                 vs.GetValue(currentTime),
-                                vs.positive,
-                                vs.negative
+                                vs.Positive,
+                                vs.Negative
                             ));
                             break;
                     }
@@ -42,21 +49,21 @@ namespace library {
             }
 
             //* ISource
-            companion.iSources = new List<PrimISource>();
-            foreach (var pis in ckt.iSources) {
+            companion.ISources = new List<PrimISource>();
+            foreach (var pis in ckt.ISources) {
                 if (pis is ISource) {
                     ISource isc = (ISource)pis;
-                    switch (isc.mode) {
+                    switch (isc.Mode) {
                         case ISource.WorkingMode.Constant:
                             companion.AddComponent(pis);
                             break;
 
                         default:
                             companion.AddComponent(new PrimVSource(
-                                $"__CurrentIS_{isc.name}",
+                                $"__CurrentIS_{isc.Name}",
                                 isc.GetValue(currentTime),
-                                isc.positive,
-                                isc.negative
+                                isc.Positive,
+                                isc.Negative
                             ));
                             break;
                     }
@@ -65,35 +72,58 @@ namespace library {
                 }
             }
 
-            companion.devices = new List<Device>();
-            foreach (var device in ckt.devices) {
+            companion.Devices = new List<Device>();
+            foreach (var device in ckt.Devices) {
                 switch (device) {
-                    case Capacitor c:
-                        // Here we use p and n to represent the positive/negative pin of the imaginary ISource Ieq.
-                        var (p, n) = (c.pins[0], c.pins[1]);
-                        // Get the previously calculated voltage between the two pins.
-                        var vPrev = data.result.Count() != 0 ?
-                            CheckLastVoltage(p, data.result) - CheckLastVoltage(n, data.result) :
-                            0;
-                        var gEq = c.capacitance / data.timestep;
-                        companion.AddComponent(new Resistor(
-                            $"__CompanionRes_{c.name}",
-                            1 / gEq,
-                            p,
-                            n
-                        ));
-                        companion.AddComponent(new PrimISource(
-                            $"__CompanionISource_{c.name}",
-                            vPrev * gEq,
-                            p,
-                            n
-                        ));
-                        break;
-                    case Inductor l:
-                        throw new NotImplementedException();
-                    default:
-                        companion.AddComponent(device);
-                        break;
+                    case Capacitor c: {
+                            // Here we use p and n to represent the positive/negative pin of the imaginary ISource Ieq.
+                            var (p, n) = (c.Pins[0], c.Pins[1]);
+                            // Get the previously calculated voltage between the two pins.
+                            var vPrev = data.Result.Count() != 0 ?
+                                CheckLastVoltage(p, data) - CheckLastVoltage(n, data) :
+                                0;
+                            var gEq = c.Capacitance / data.Timestep;
+                            companion.AddComponent(new Resistor(
+                                $"__CompanionRes_{c.Name}",
+                                1 / gEq,
+                                p,
+                                n
+                            ));
+                            companion.AddComponent(new PrimISource(
+                                $"__CompanionISource_{c.Name}",
+                                vPrev * gEq,
+                                p,
+                                n
+                            ));
+                            break;
+                        }
+                    case Inductor l: {
+                            // Here we use p and n to represent two pins of the inductor.
+                            var (p, n) = (l.Pins[0], l.Pins[1]);
+                            // Then we add an extra node m to the circuit.
+                            var m = companion.GenNode();
+                            // Get the previously calculated current through the inductor.
+                            var iPrev = CheckLastCurrent(l, data);
+                            var rEq = l.Inductance / data.Timestep;
+                            companion.AddComponent(new Resistor(
+                                $"__CompanionRes_{l.Name}",
+                                rEq,
+                                m,
+                                n
+                            ));
+                            companion.AddComponent(new PrimVSource(
+                                $"__CompanionVSource_{l.Name}",
+                                iPrev * rEq,
+                                p,
+                                m
+                            ));
+                            data.CompanionVSources[l] = companion.N + companion.M - 1;
+                            break;
+                        }
+                    default: {
+                            companion.AddComponent(device);
+                            break;
+                        }
                 }
             }
 
@@ -104,8 +134,8 @@ namespace library {
 
         public static void Analyze(in Circuit ckt, ref TransientAnalysisData data) {
             /* Perform the transient analysis and store the result in the given TransientAnalysisData variable. */
-            for (double currentTime = 0; currentTime < data.stoptime; currentTime += data.timestep) {
-                var companion = TransientAnalysis.GenCompanion(ckt, currentTime, data);
+            for (double currentTime = 0; currentTime < data.Stoptime; currentTime += data.Timestep) {
+                var companion = TransientAnalysis.GenCompanion(ckt, currentTime, ref data);
                 data.Add(DCAnalysis.SolveX(companion));
             }
         }
@@ -113,9 +143,12 @@ namespace library {
 
     public class TransientAnalysisData {
         /* A class containing the transient analysis parameters and result. */
-        public List<Vector<double>> result;
-        public double stoptime;
-        public double timestep;
+        public List<Vector<double>> Result;
+        public double Stoptime;
+        public double Timestep;
+
+        // A dictionary of companion vSources and their corresponding index in the result vector.
+        public Dictionary<Device, int> CompanionVSources;
 
         public TransientAnalysisData(Circuit ckt, double timestep, double stoptime) {
             var builder = Vector<double>.Build;
@@ -123,15 +156,17 @@ namespace library {
             var m = ckt.M;
             var size = n + m;
 
-            this.result = new List<Vector<double>>();
+            this.Result = new List<Vector<double>>();
+            this.CompanionVSources = new Dictionary<Device, int>();
 
-            this.timestep = timestep;
-            this.stoptime = stoptime;
+            this.Timestep = timestep;
+            this.Stoptime = stoptime;
         }
+
 
         public void Add(Vector<double> item) {
             // Add a result vector to the history.
-            this.result.Add(item);
+            this.Result.Add(item);
         }
     }
 }

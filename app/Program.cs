@@ -13,7 +13,7 @@ namespace app {
 
         public static Circuit TestCkt2() {
             var testCkt = new Circuit("testTransAnalysis");
-            var gnd = testCkt.ground;
+            var gnd = testCkt.Ground;
             var node0 = testCkt.GenNode();
             var node1 = testCkt.GenNode();
             testCkt.AddComponent(new Resistor("R1", 1E3, node0, node1));
@@ -45,7 +45,7 @@ namespace app {
             var data = new TransientAnalysisData(ckt2, 1E-5, 6E-3);
             TransientAnalysis.Analyze(ckt2, ref data);
             var dataVList = new List<double>();
-            foreach (var item in data.result) {
+            foreach (var item in data.Result) {
                 dataVList.Add(item[1]);
             }
             double[] dataV = dataVList.ToArray();

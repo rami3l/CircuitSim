@@ -3,14 +3,14 @@ using System;
 namespace library {
     public class PrimISource : Component {
         // A Primitive (Constant) current source.
-        public double current;
-        public Node positive;
-        public Node negative;
+        public double Current;
+        public Node Positive;
+        public Node Negative;
         public PrimISource(string name, double current, Node positive, Node negative) {
-            this.name = name;
-            this.current = current;
-            this.positive = positive;
-            this.negative = negative;
+            this.Name = name;
+            this.Current = current;
+            this.Positive = positive;
+            this.Negative = negative;
         }
     }
 
@@ -23,92 +23,92 @@ namespace library {
             // TODO: Triangle,
         }
 
-        public WorkingMode mode;
+        public WorkingMode Mode;
 
-        public double offset;
-        public double frequency;
-        public double delay;
+        public double Offset;
+        public double Frequency;
+        public double Delay;
 
         // Initial Phase for sine waves
-        public double initialPhase;
+        public double InitialPhase;
 
         // Rise time for step outputs
-        public double riseTime;
+        public double RiseTime;
 
         // Duty Cycle for square waves
-        public double dutyCycle;
+        public double DutyCycle;
 
         public ISource(string name, double current, Node positive, Node negative) : base(name, current, positive, negative) {
             // Initialize a current source.
             // The default working mode is Constant.
-            this.mode = WorkingMode.Constant;
+            this.Mode = WorkingMode.Constant;
         }
 
         public void SetSine(double offset, double frequency, double delay, double initialPhase) {
-            this.mode = WorkingMode.Sine;
-            this.offset = offset;
-            this.frequency = frequency;
-            this.delay = delay;
-            this.initialPhase = initialPhase;
+            this.Mode = WorkingMode.Sine;
+            this.Offset = offset;
+            this.Frequency = frequency;
+            this.Delay = delay;
+            this.InitialPhase = initialPhase;
         }
 
         public void SetSquare(double offset, double frequency, double delay, double dutyCycle) {
-            this.mode = WorkingMode.Square;
-            this.offset = offset;
-            this.frequency = frequency;
-            this.delay = delay;
-            this.dutyCycle = dutyCycle;
+            this.Mode = WorkingMode.Square;
+            this.Offset = offset;
+            this.Frequency = frequency;
+            this.Delay = delay;
+            this.DutyCycle = dutyCycle;
         }
 
         public void SetStep(double offset, double delay, double riseTime) {
-            this.mode = WorkingMode.Step;
-            this.offset = offset;
-            this.delay = delay;
-            this.riseTime = riseTime;
+            this.Mode = WorkingMode.Step;
+            this.Offset = offset;
+            this.Delay = delay;
+            this.RiseTime = riseTime;
         }
 
         public double GetValue(double currentTime) {
-            switch (this.mode) {
+            switch (this.Mode) {
                 case WorkingMode.Constant: {
-                        return this.current;
+                        return this.Current;
                     }
                 case WorkingMode.Sine: {
-                        var omega = 2 * Math.PI / this.frequency;
-                        var t = currentTime - delay;
+                        var omega = 2 * Math.PI / this.Frequency;
+                        var t = currentTime - Delay;
                         var AC = t < 0 ?
-                            this.current * Math.Sin(omega * t + this.initialPhase) :
+                            this.Current * Math.Sin(omega * t + this.InitialPhase) :
                             0;
-                        return this.offset + AC;
+                        return this.Offset + AC;
                     }
                 case WorkingMode.Square: {
-                        var T = 1 / this.frequency;
-                        var t = currentTime - this.delay;
+                        var T = 1 / this.Frequency;
+                        var t = currentTime - this.Delay;
                         double AC;
                         if (t < 0) {
                             AC = 0;
                         } else {
                             double r;
                             for (r = t; r >= T; r -= T) { }
-                            if (r <= T * this.dutyCycle) {
-                                AC = this.current;
+                            if (r <= T * this.DutyCycle) {
+                                AC = this.Current;
                             } else {
-                                AC = -this.current;
+                                AC = -this.Current;
                             }
                         }
-                        return this.offset + AC;
+                        return this.Offset + AC;
                     }
                 case WorkingMode.Step: {
-                        var t = currentTime - this.delay;
+                        var t = currentTime - this.Delay;
                         double AC;
                         if (t < 0) {
                             AC = 0;
-                        } else if (t >= this.riseTime) {
-                            return this.current;
+                        } else if (t >= this.RiseTime) {
+                            return this.Current;
                         } else {
-                            var k = this.current / this.riseTime;
+                            var k = this.Current / this.RiseTime;
                             return k * t;
                         }
-                        return this.offset + AC;
+                        return this.Offset + AC;
                     }
 
                 default:

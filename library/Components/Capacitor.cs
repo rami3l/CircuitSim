@@ -2,13 +2,13 @@ using System.Collections.Generic;
 
 namespace library {
     public class Capacitor : Device {
-        public double capacitance;
+        public double Capacitance;
         public Capacitor(string name, double capacitance, Node a, Node b) {
-            this.name = name;
-            this.capacitance = capacitance;
-            this.pins = new List<Node>();
-            this.pins.Add(a);
-            this.pins.Add(b);
+            this.Name = name;
+            this.Capacitance = capacitance;
+            this.Pins = new List<Node>();
+            this.Pins.Add(a);
+            this.Pins.Add(b);
         }
     }
 }

@@ -46,13 +46,13 @@ namespace library {
         static Matrix<double> GenG(Circuit c) {
             var builder = Matrix<double>.Build;
             var res = builder.Dense(c.N, c.N);
-            foreach (var device in c.devices) {
+            foreach (var device in c.Devices) {
                 var g = device.Conductance();
-                if (device.pins.Count != 2) {
+                if (device.Pins.Count != 2) {
                     throw new NotImplementedException();
                 }
-                int i = device.pins[0].ID;
-                int j = device.pins[1].ID;
+                int i = device.Pins[0].ID;
+                int j = device.Pins[1].ID;
 
                 AddIfNotGrounded(ref res, i, i, g);
                 AddIfNotGrounded(ref res, j, j, g);
@@ -65,9 +65,9 @@ namespace library {
         static Matrix<double> GenB(Circuit c) {
             var builder = Matrix<double>.Build;
             var res = builder.Dense(c.N, c.M);
-            foreach ((var vSource, var i) in c.vSources.Select((v, i) => (v, i))) {
-                var p = vSource.positive.ID;
-                var n = vSource.negative.ID;
+            foreach ((var vSource, var i) in c.VSources.Select((v, i) => (v, i))) {
+                var p = vSource.Positive.ID;
+                var n = vSource.Negative.ID;
 
                 AddIfNotGrounded(ref res, p, i, 1);
                 AddIfNotGrounded(ref res, n, i, -1);
@@ -81,16 +81,16 @@ namespace library {
             var builder = Vector<double>.Build;
             var size = c.N + c.M;
             var res = builder.Dense(size);
-            foreach (var iSource in c.iSources) {
-                var p = iSource.positive.ID;
-                var n = iSource.negative.ID;
-                var i = iSource.current;
+            foreach (var iSource in c.ISources) {
+                var p = iSource.Positive.ID;
+                var n = iSource.Negative.ID;
+                var i = iSource.Current;
 
                 AddIfNotGrounded(ref res, p, i);
                 AddIfNotGrounded(ref res, n, -i);
             }
-            foreach ((var vSource, var i) in c.vSources.Select((v, i) => (v, i))) {
-                AddIfNotGrounded(ref res, c.N + i, vSource.voltage);
+            foreach ((var vSource, var i) in c.VSources.Select((v, i) => (v, i))) {
+                AddIfNotGrounded(ref res, c.N + i, vSource.Voltage);
             }
             return res;
         }

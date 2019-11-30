@@ -6,9 +6,9 @@ using Xunit;
 
 namespace test_library {
     public class TestDCAnalysis {
-        public static Circuit TestCkt1() {
-            var testCkt = new Circuit("testCkt");
-            var gnd = testCkt.ground;
+        public static Circuit DCTestCircuit() {
+            var testCkt = new Circuit("DCTestCircuit");
+            var gnd = testCkt.Ground;
             var node1 = testCkt.GenNode();
             var node2 = testCkt.GenNode();
             var node3 = testCkt.GenNode();
@@ -21,9 +21,9 @@ namespace test_library {
         }
 
         [Fact]
-        public void TestCkt1_GenA() {
+        public void DCTestCircuit_GenA() {
             var builder = Matrix<double>.Build;
-            var testCkt = TestCkt1();
+            var testCkt = DCTestCircuit();
             double[,] shouldArr = {
                 {0.5,   0,      0,      -1,     0},
                 {0,     0.375,  -0.25,  1,      0},
@@ -37,9 +37,9 @@ namespace test_library {
         }
 
         [Fact]
-        public void TestCkt1_GenZ() {
+        public void DCTestCircuit_GenZ() {
             var builder = Vector<double>.Build;
-            var testCkt = TestCkt1();
+            var testCkt = DCTestCircuit();
             double[] shouldArr = { 0, 0, 0, 32, 20 };
             var should = builder.DenseOfArray(shouldArr);
 
@@ -47,9 +47,9 @@ namespace test_library {
         }
 
         [Fact]
-        public void TestCkt1_SolveX() {
+        public void DCTestCircuit_SolveX() {
             var builder = Vector<double>.Build;
-            var testCkt = TestCkt1();
+            var testCkt = DCTestCircuit();
             double[] shouldArr = { -8, 24, 20, -4, 1 };
             var should = builder.DenseOfArray(shouldArr);
 
