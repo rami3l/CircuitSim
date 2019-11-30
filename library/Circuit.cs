@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace library {
     public class Circuit {
@@ -29,8 +30,8 @@ namespace library {
             return this.MemberwiseClone();
         }
 
-        public Node GenNode() {
-            var res = new Node(this.N);
+        public Node GenNode(string name = "") {
+            var res = new Node(this.N, name);
             this.Nodes.Add(res);
             return res;
         }

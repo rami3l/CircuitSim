@@ -6,9 +6,13 @@ namespace library {
 
         public int ID;
 
-        public Node(int ID) {
+        public Node(int ID, string name = "") {
             this.ID = ID; // -1 for ground, >=0 for others
-            this.Name = $"Node {ID}";
+            if (name == "") {
+                this.Name = $"Node {ID}";
+            } else {
+                this.Name = name;
+            }
         }
 
         public bool Equals(Node other) {

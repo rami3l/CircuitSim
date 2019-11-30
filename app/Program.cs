@@ -17,7 +17,7 @@ namespace app {
             var node0 = testCkt.GenNode();
             var node1 = testCkt.GenNode();
             testCkt.AddComponent(new Resistor("R1", 1E3, node0, node1));
-            testCkt.AddComponent(new Capacitor("C1", 1E-6, node1, gnd));
+            testCkt.AddComponent(new Inductor("L1", 1, node1, gnd));
 
             var vs = new VSource("vStep", 1, node0, gnd);
             vs.SetStep(0, 0, 1E-9);
@@ -46,7 +46,7 @@ namespace app {
             TransientAnalysis.Analyze(ckt2, ref data);
             var dataVList = new List<double>();
             foreach (var item in data.Result) {
-                dataVList.Add(item[1]);
+                dataVList.Add(item[0] - item[1]);
             }
             double[] dataV = dataVList.ToArray();
 

@@ -24,6 +24,12 @@ namespace library {
             var companion = (Circuit)ckt.Clone();
             companion.Name = $"__Companion_{ckt.Name}";
 
+            //* Nodes
+            companion.Nodes = new List<Node>();
+            foreach (var node in ckt.Nodes) {
+                companion.Nodes.Add(node);
+            }
+
             //* VSource
             companion.VSources = new List<PrimVSource>();
             foreach (var pvs in ckt.VSources) {
@@ -101,9 +107,11 @@ namespace library {
                             // Here we use p and n to represent two pins of the inductor.
                             var (p, n) = (l.Pins[0], l.Pins[1]);
                             // Then we add an extra node m to the circuit.
-                            var m = companion.GenNode();
+                            var m = companion.GenNode($"__CompanionNode_{l.Name}");
                             // Get the previously calculated current through the inductor.
-                            var iPrev = CheckLastCurrent(l, data);
+                            var iPrev = data.Result.Count() != 0 ?
+                                -CheckLastCurrent(l, data) :
+                                0;
                             var rEq = l.Inductance / data.Timestep;
                             companion.AddComponent(new Resistor(
                                 $"__CompanionRes_{l.Name}",
