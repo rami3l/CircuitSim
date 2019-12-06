@@ -5,8 +5,8 @@ namespace library {
     public class Circuit {
         public string Name;
         public List<Device> Devices;
-        public List<PrimVSource> VSources;
-        public List<PrimISource> ISources;
+        public List<VSource> VSources;
+        public List<ISource> ISources;
         public List<Node> Nodes;
         public Node Ground;
 
@@ -21,8 +21,8 @@ namespace library {
             this.Ground = gnd;
 
             this.Devices = new List<Device>();
-            this.VSources = new List<PrimVSource>();
-            this.ISources = new List<PrimISource>();
+            this.VSources = new List<VSource>();
+            this.ISources = new List<ISource>();
             this.Nodes = new List<Node>();
         }
 
@@ -40,11 +40,11 @@ namespace library {
             this.Devices.Add(device);
         }
 
-        public void AddComponent(PrimVSource vSource) {
+        public void AddComponent(VSource vSource) {
             this.VSources.Add(vSource);
         }
 
-        public void AddComponent(PrimISource iSource) {
+        public void AddComponent(ISource iSource) {
             this.ISources.Add(iSource);
         }
     }

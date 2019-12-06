@@ -31,7 +31,7 @@ namespace library {
             }
 
             //* VSource
-            companion.VSources = new List<PrimVSource>();
+            companion.VSources = new List<VSource>();
             foreach (var pvs in ckt.VSources) {
                 if (pvs is VSource) {
                     VSource vs = (VSource)pvs;
@@ -41,7 +41,7 @@ namespace library {
                             break;
                         }
                         default: {
-                            companion.AddComponent(new PrimVSource(
+                            companion.AddComponent(new VSource(
                                 $"__CurrentVS_{vs.Name}",
                                 vs.GetValue(currentTime),
                                 vs.Positive,
@@ -56,7 +56,7 @@ namespace library {
             }
 
             //* ISource
-            companion.ISources = new List<PrimISource>();
+            companion.ISources = new List<ISource>();
             foreach (var pis in ckt.ISources) {
                 if (pis is ISource) {
                     ISource isc = (ISource)pis;
@@ -66,7 +66,7 @@ namespace library {
                             break;
                         }
                         default: {
-                            companion.AddComponent(new PrimVSource(
+                            companion.AddComponent(new VSource(
                                 $"__CurrentIS_{isc.Name}",
                                 isc.GetValue(currentTime),
                                 isc.Positive,
@@ -97,7 +97,7 @@ namespace library {
                             p,
                             n
                         ));
-                        companion.AddComponent(new PrimISource(
+                        companion.AddComponent(new ISource(
                             $"__CompanionISource_{c.Name}",
                             vPrev * gEq,
                             p,
@@ -121,7 +121,7 @@ namespace library {
                             m,
                             n
                         ));
-                        companion.AddComponent(new PrimVSource(
+                        companion.AddComponent(new VSource(
                             $"__CompanionVSource_{l.Name}",
                             iPrev * rEq,
                             p,
