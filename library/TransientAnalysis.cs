@@ -32,52 +32,24 @@ namespace library {
 
             //* VSource
             companion.VSources = new List<VSource>();
-            foreach (var pvs in ckt.VSources) {
-                if (pvs is VSource) {
-                    VSource vs = (VSource)pvs;
-                    switch (vs.Mode) {
-                        case VSource.WorkingMode.Constant: {
-                            companion.AddComponent(pvs);
-                            break;
-                        }
-                        default: {
-                            companion.AddComponent(new VSource(
-                                $"__CurrentVS_{vs.Name}",
-                                vs.GetValue(currentTime),
-                                vs.Positive,
-                                vs.Negative
-                            ));
-                            break;
-                        }
-                    }
-                } else {
-                    companion.AddComponent(pvs);
-                }
+            foreach (var cvs in ckt.VSources) {
+                companion.AddComponent(new VSource(
+                    $"__CurrentVS_{cvs.Name}",
+                    cvs.GetValue(currentTime),
+                    cvs.Positive,
+                    cvs.Negative
+                ));
             }
 
             //* ISource
             companion.ISources = new List<ISource>();
-            foreach (var pis in ckt.ISources) {
-                if (pis is ISource) {
-                    ISource isc = (ISource)pis;
-                    switch (isc.Mode) {
-                        case ISource.WorkingMode.Constant: {
-                            companion.AddComponent(pis);
-                            break;
-                        }
-                        default: {
-                            companion.AddComponent(new VSource(
-                                $"__CurrentIS_{isc.Name}",
-                                isc.GetValue(currentTime),
-                                isc.Positive,
-                                isc.Negative
-                            ));
-                            break;
-                        }
-                    }
-                } else {
-                    companion.AddComponent(pis);
-                }
+            foreach (var cis in ckt.ISources) {
+                companion.AddComponent(new VSource(
+                    $"__CurrentIS_{cis.Name}",
+                    cis.GetValue(currentTime),
+                    cis.Positive,
+                    cis.Negative
+                ));
             }
 
             companion.Devices = new List<Device>();

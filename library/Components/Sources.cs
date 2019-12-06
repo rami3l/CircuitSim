@@ -1,20 +1,7 @@
 using System;
 
 namespace library {
-    public class PrimSourcePrototype : Component {
-        // A Primitive (Constant) current/voltage source.
-        public double Value;
-        public Node Positive;
-        public Node Negative;
-        public PrimSourcePrototype(string name, double value, Node positive, Node negative) {
-            this.Name = name;
-            this.Value = value;
-            this.Positive = positive;
-            this.Negative = negative;
-        }
-    }
-
-    public class SourcePrototype : PrimSourcePrototype {
+    public class SourcePrototype : Component {
         public enum WorkingMode {
             Constant,
             Sine,
@@ -24,6 +11,10 @@ namespace library {
         }
 
         public WorkingMode Mode;
+
+        public double Value;
+        public Node Positive;
+        public Node Negative;
 
         public double Offset;
         public double Frequency;
@@ -38,8 +29,13 @@ namespace library {
         // Duty Cycle for square waves
         public double DutyCycle;
 
-        public SourcePrototype(string name, double value, Node positive, Node negative) : base(name, value, positive, negative) {
+        public SourcePrototype(string name, double value, Node positive, Node negative) {
             // Initialize a current/voltage source.
+            this.Name = name;
+            this.Value = value;
+            this.Positive = positive;
+            this.Negative = negative;
+
             // The default working mode is Constant.
             this.Mode = WorkingMode.Constant;
         }
@@ -73,9 +69,9 @@ namespace library {
                     return this.Value;
                 }
                 case WorkingMode.Sine: {
-                    var omega = 2 * Math.PI / this.Frequency;
+                    var omega = 2 * Math.PI * this.Frequency;
                     var t = currentTime - Delay;
-                    var AC = t < 0 ?
+                    var AC = t >= 0 ?
                         this.Value * Math.Sin(omega * t + this.InitialPhase) :
                         0;
                     return this.Offset + AC;
@@ -105,10 +101,10 @@ namespace library {
                     if (t < 0) {
                         AC = 0;
                     } else if (t >= this.RiseTime) {
-                        return this.Value;
+                        AC = this.Value;
                     } else {
                         var k = this.Value / this.RiseTime;
-                        return k * t;
+                        AC = k * t;
                     }
                     return this.Offset + AC;
                 }

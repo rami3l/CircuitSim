@@ -76,27 +76,28 @@ namespace app {
             testCkt.AddComponent(new Resistor("R1", 1, node0, gnd));
 
             var vs = new VSource("vSin", 1, node0, gnd);
-            vs.SetSine(2, 4, 1, Math.PI / 2);
+            vs.SetSine(2, 4, 50E-3, -Math.PI / 4);
             testCkt.AddComponent(vs);
             return testCkt;
         }
 
         static void TestACSource() {
             var ckt1 = ACVSourceTestCkt();
-            var data1 = new TransientAnalysisData(ckt1, 1E-2, 1);
+            var data1 = new TransientAnalysisData(ckt1, 1E-2, 2);
             TransientAnalysis.Analyze(ckt1, ref data1);
             var dataVList1 = new List<double>();
             foreach (var item in data1.Result) {
-                dataVList1.Add(item[1]);
+                dataVList1.Add(-item[1]);
             }
             double[] dataV1 = dataVList1.ToArray();
 
             /*
             for (int i = 0; i < 20; i++) {
-                Console.Write("{0}, ", dataV[i]);
+                Console.Write("{0}, ", dataV1[i]);
             }
             Console.WriteLine();
             */
+
 
             int pointCount = dataV1.Length;
             double[] dataXs = ScottPlot.DataGen.Consecutive(pointCount);
