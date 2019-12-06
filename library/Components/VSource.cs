@@ -70,49 +70,51 @@ namespace library {
         public double GetValue(double currentTime) {
             switch (this.Mode) {
                 case WorkingMode.Constant: {
-                        return this.Voltage;
-                    }
+                    return this.Voltage;
+                }
                 case WorkingMode.Sine: {
-                        var omega = 2 * Math.PI / this.Frequency;
-                        var t = currentTime - Delay;
-                        var AC = t < 0 ?
-                            this.Voltage * Math.Sin(omega * t + this.InitialPhase) :
-                            0;
-                        return this.Offset + AC;
-                    }
+                    var omega = 2 * Math.PI / this.Frequency;
+                    var t = currentTime - Delay;
+                    var AC = t < 0 ?
+                        this.Voltage * Math.Sin(omega * t + this.InitialPhase) :
+                        0;
+                    return this.Offset + AC;
+                }
                 case WorkingMode.Square: {
-                        var T = 1 / this.Frequency;
-                        var t = currentTime - this.Delay;
-                        double AC;
-                        if (t < 0) {
-                            AC = 0;
-                        } else {
-                            double r;
-                            for (r = t; r >= T; r -= T) { }
-                            if (r <= T * this.DutyCycle) {
-                                AC = this.Voltage;
-                            } else {
-                                AC = -this.Voltage;
-                            }
+                    var T = 1 / this.Frequency;
+                    var t = currentTime - this.Delay;
+                    double AC;
+                    if (t < 0) {
+                        AC = 0;
+                    } else {
+                        double r;
+                        for (r = t; r >= T; r -= T) {
+                            ;
                         }
-                        return this.Offset + AC;
+                        if (r <= T * this.DutyCycle) {
+                            AC = this.Voltage;
+                        } else {
+                            AC = -this.Voltage;
+                        }
                     }
+                    return this.Offset + AC;
+                }
                 case WorkingMode.Step: {
-                        var t = currentTime - this.Delay;
-                        double AC;
-                        if (t < 0) {
-                            AC = 0;
-                        } else if (t >= this.RiseTime) {
-                            return this.Voltage;
-                        } else {
-                            var k = this.Voltage / this.RiseTime;
-                            return k * t;
-                        }
-                        return this.Offset + AC;
+                    var t = currentTime - this.Delay;
+                    double AC;
+                    if (t < 0) {
+                        AC = 0;
+                    } else if (t >= this.RiseTime) {
+                        return this.Voltage;
+                    } else {
+                        var k = this.Voltage / this.RiseTime;
+                        return k * t;
                     }
-
-                default:
+                    return this.Offset + AC;
+                }
+                default: {
                     throw new NotImplementedException();
+                }
             }
         }
     }

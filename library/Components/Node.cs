@@ -1,7 +1,7 @@
 using System;
 
 namespace library {
-    public struct Node : IEquatable<Node> {
+    public class Node : IEquatable<Node> {
         public string Name;
 
         public int ID;

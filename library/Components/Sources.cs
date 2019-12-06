@@ -1,20 +1,20 @@
 using System;
 
 namespace library {
-    public class PrimISource : Component {
-        // A Primitive (Constant) current source.
-        public double Current;
+    public class PrimSourcePrototype : Component {
+        // A Primitive (Constant) current/voltage source.
+        public double Value;
         public Node Positive;
         public Node Negative;
-        public PrimISource(string name, double current, Node positive, Node negative) {
+        public PrimSourcePrototype(string name, double value, Node positive, Node negative) {
             this.Name = name;
-            this.Current = current;
+            this.Value = value;
             this.Positive = positive;
             this.Negative = negative;
         }
     }
 
-    public class ISource : PrimISource {
+    public class SourcePrototype : PrimSourcePrototype {
         public enum WorkingMode {
             Constant,
             Sine,
@@ -38,8 +38,8 @@ namespace library {
         // Duty Cycle for square waves
         public double DutyCycle;
 
-        public ISource(string name, double current, Node positive, Node negative) : base(name, current, positive, negative) {
-            // Initialize a current source.
+        public SourcePrototype(string name, double value, Node positive, Node negative) : base(name, value, positive, negative) {
+            // Initialize a current/voltage source.
             // The default working mode is Constant.
             this.Mode = WorkingMode.Constant;
         }
@@ -70,13 +70,13 @@ namespace library {
         public double GetValue(double currentTime) {
             switch (this.Mode) {
                 case WorkingMode.Constant: {
-                    return this.Current;
+                    return this.Value;
                 }
                 case WorkingMode.Sine: {
                     var omega = 2 * Math.PI / this.Frequency;
                     var t = currentTime - Delay;
                     var AC = t < 0 ?
-                        this.Current * Math.Sin(omega * t + this.InitialPhase) :
+                        this.Value * Math.Sin(omega * t + this.InitialPhase) :
                         0;
                     return this.Offset + AC;
                 }
@@ -92,9 +92,9 @@ namespace library {
                             ;
                         }
                         if (r <= T * this.DutyCycle) {
-                            AC = this.Current;
+                            AC = this.Value;
                         } else {
-                            AC = -this.Current;
+                            AC = -this.Value;
                         }
                     }
                     return this.Offset + AC;
@@ -105,9 +105,9 @@ namespace library {
                     if (t < 0) {
                         AC = 0;
                     } else if (t >= this.RiseTime) {
-                        return this.Current;
+                        return this.Value;
                     } else {
-                        var k = this.Current / this.RiseTime;
+                        var k = this.Value / this.RiseTime;
                         return k * t;
                     }
                     return this.Offset + AC;
