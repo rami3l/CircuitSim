@@ -75,8 +75,9 @@ namespace app {
             var node0 = testCkt.GenNode();
             testCkt.AddComponent(new Resistor("R1", 1, node0, gnd));
 
-            var vs = new VSource("vSin", 1, node0, gnd);
-            vs.SetSine(2, 4, 50E-3, -Math.PI / 4);
+            var vs = new VSource("vAC", 1, node0, gnd);
+            vs.SetSquare(0.5, 4, 50E-3, 0.25);
+            // vs.SetSine(2, 4, 50E-3, -Math.PI / 4);
             testCkt.AddComponent(vs);
             return testCkt;
         }

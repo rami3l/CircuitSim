@@ -116,7 +116,7 @@ namespace library {
 
         public static void Analyze(in Circuit ckt, ref TransientAnalysisData data) {
             /* Perform the transient analysis and store the result in the given TransientAnalysisData variable. */
-            for (double currentTime = 0; currentTime < data.Stoptime; currentTime += data.Timestep) {
+            for (double currentTime = 0; currentTime <= data.Stoptime; currentTime += data.Timestep) {
                 var companion = TransientAnalysis.GenCompanion(ckt, currentTime, ref data);
                 data.Add(DCAnalysis.SolveX(companion));
             }

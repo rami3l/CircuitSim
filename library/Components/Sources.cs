@@ -71,9 +71,9 @@ namespace library {
                 case WorkingMode.Sine: {
                     var omega = 2 * Math.PI * this.Frequency;
                     var t = currentTime - Delay;
-                    var AC = t >= 0 ?
-                        this.Value * Math.Sin(omega * t + this.InitialPhase) :
-                        0;
+                    var AC = t < 0 ?
+                        0 :
+                        this.Value * Math.Sin(omega * t + this.InitialPhase);
                     return this.Offset + AC;
                 }
                 case WorkingMode.Square: {
