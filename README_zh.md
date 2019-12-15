@@ -122,7 +122,7 @@ static void TestTransAnalysis() {
   
   这里我们使用 ScottPlot 绘图库验证结果准确性，结果如图：
 
-  ![暂态分析案例](https://github.com/rami3l/CircuitSim/blob/master/Plots/TestTransAnalysis.png)
+  ![暂态分析案例](https://raw.githubusercontent.com/rami3l/CircuitSim/master/Plots/TestTransAnalysis.png)
 
 ## 参考资料
 
