@@ -118,7 +118,7 @@ static void TestTransAnalysis() {
   List 中各向量的构成为：前若干项为各节点电压（地线电压为0，不出现在本向量中），后若干项为通过电路中各电压源的电流的相反数。  
   这里我们使用 ScottPlot 绘图库验证结果准确性。  
   结果如图：  
-  ![暂态分析案例](https://lpsa.swarthmore.edu/Systems/Electrical/mna/images/MNA2.ex1.gif)
+  ![暂态分析案例](https://github.com/rami3l/CircuitSim/blob/master/Plots/TestTransAnalysis.png)
 
 ## 参考资料
 
