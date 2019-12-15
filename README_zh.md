@@ -116,8 +116,8 @@ static void TestTransAnalysis() {
   TransientAnalysis.Analyze() 方法输入为一 Circuit 对象和一 TransientAnalysisData 的引用，并将结果以 List < Vector < double >> 形式输出到 TransientAnalysisData.Result 属性中，
   其中 Vector 是 MathNet.Numerics.LinearAlgebra 中定义的向量类。  
   List 中各向量的构成为：前若干项为各节点电压（地线电压为0，不出现在本向量中），后若干项为通过电路中各电压源的电流的相反数。  
-  这里我们使用 ScottPlot 绘图库验证结果准确性。  
-  结果如图：  
+  
+  这里我们使用 ScottPlot 绘图库验证结果准确性，结果如图：  
   ![暂态分析案例](https://github.com/rami3l/CircuitSim/blob/master/Plots/TestTransAnalysis.png)
 
 ## 参考资料
